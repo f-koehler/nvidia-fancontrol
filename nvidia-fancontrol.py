@@ -44,7 +44,7 @@ def fan_curve(temperature):
         return 20
     if temperature < 70:
         return 50
-    if temperautre < 80:
+    if temperature < 80:
         return 100
 
 def load_config(path="/etc/nvidia_fancontrol.py"):
@@ -53,8 +53,43 @@ def load_config(path="/etc/nvidia_fancontrol.py"):
     spec.loader.exec_module(config)
     return config
 
+def plot_fan_curves(config):
+    try:
+        from matplotlib import pyplot as plt
+    except:
+        return
+
+    T = list(range(0, 100))
+
+    plt.figure(figsize=(6, 6))
+
+    plt.grid()
+
+    plt.xlim(0, 100)
+    plt.ylim(0, 105)
+    plt.yticks([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+
+    plt.xlabel("temperature / °C")
+    plt.ylabel("percental fan speed")
+
+    for fan, control in config.fan_controls.items():
+        if not control[1]:
+            speed = [fan_curve(T_) for T_ in T]
+        else:
+            try:
+                f = getattr(config, control[1])
+                speed = [f(T_) for T_ in T]
+            except:
+                speed = [fan_curve(T_) for T_ in T]
+        plt.plot(T, speed, label=fan)
+    title = plt.title("nvidia-fancontrol fan curves")
+    legend = plt.legend(loc="upper center", fancybox=True, ncol=4, bbox_to_anchor=(0.5, -0.1))
+    plt.savefig("/tmp/nvidia_fancontrol.pdf", bbox_extra_artists=(legend, title,), bbox_inches='tight')
+
 if __name__ == "__main__":
     config = load_config()
+
+    plot_fan_curves(config)
 
     for _, control in config.fan_controls.items():
         enable_fan_control(control[0])

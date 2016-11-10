@@ -7,6 +7,7 @@ Preqrequisites
 - `python 3.4`
 - `nvidia-settings` (through Nvidia's proprietary driver)
 - allow fan control by setting the correct cool-bits (e.g. `nvidia-xconfig --cool-bits=4`)
+- `matplotlib` (optional) to plot fan curves (`/tmp/nvidia_fancontrol.pdf`)
 
 Configuration
 -------------
@@ -39,5 +40,4 @@ to set the fan speed to a constant 50%.
 Future plans
 ------------
 - command line interface
-- create plots of the fan curve at startup
 - some logging of temperature and speed (changes)
