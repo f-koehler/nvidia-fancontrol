@@ -38,10 +38,12 @@ def set_fan_speed(speed, id):
     ])
 
 def fan_curve(temperature):
-    if temperature < 50:
-        return 0
-    if temperature < 60:
+    if temperature < 40:
         return 20
+    if temperature < 50:
+        return 20
+    if temperature < 60:
+        return 30
     if temperature < 70:
         return 50
     if temperature < 80:
